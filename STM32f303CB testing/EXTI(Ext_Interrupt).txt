@@ -94,3 +94,8 @@ int main(void)
 		//EXTI15_10_IRQHandler();
   }
 }
+
+/*References :- 
+https://stm32f4-discovery.net/2014/08/stm32f4-external-interrupts-tutorial/
+https://community.st.com/thread/36689-how-to-enable-gpio-external-interrupts-stm32f30xstdperiphdriver
+https://community.st.com/thread/45405-how-to-handle-gpio-interrupts-using-stdperiphlib#comment-176463*/
