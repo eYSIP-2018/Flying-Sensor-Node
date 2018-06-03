@@ -1,5 +1,3 @@
-// STM32 USART2 LOOP (Tx PD.5, Rx PD.6) STM32F3xx - sourcer32@gmail.com
- 
 #include "stm32f30x.h"
 #include <stm32f30x_rcc.h>
 #include <stm32f30x_gpio.h>
