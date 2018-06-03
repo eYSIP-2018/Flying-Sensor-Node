@@ -1,0 +1,17 @@
+References
+
+External Interrupt
+
+https://stm32f4-discovery.net/2014/08/stm32f4-external-interrupts-tutorial/
+
+https://community.st.com/thread/36689-how-to-enable-gpio-external-interrupts-stm32f30xstdperiphdriver
+
+https://community.st.com/thread/45405-how-to-handle-gpio-interrupts-using-stdperiphlib#comment-176463*/
+
+Timer 
+https://visualgdb.com/tutorials/arm/stm32/timers/
+
+USART
+https://community.st.com/message/200031?commentID=200031#comment-200031
+https://stackoverflow.com/questions/12543076/usart-receive-interrupt-stm32
+https://embeddedsystemengineering.blogspot.com/2015/04/stm32f4-discovery-tutorial-5-usart.html
