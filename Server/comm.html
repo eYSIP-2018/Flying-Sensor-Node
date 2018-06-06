@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js" ></script>
+<script src="js/roslib.js"></script>
+
+
+<script type="text/javascript" src="js/moment.js"></script>
+
+<script type="text/javascript" src="js/Chart.js"></script>
+
+<script type="text/javascript" src="js/chartjs-plugin-streaming.js"></script>
+
+ 
+ <style type="text/css">
+   #set{
+    visibility: hidden;
+   }    
+ </style>
+ <style type="text/css">
+   .chartjs-render-monitor {
+ -webkit-animation:chartjs-render-animation 0.001s;
+ animation:chartjs-render-animation 0.001s;
+}
+ </style>
+
+</head>
+
+
+
+<body>
+   <nav class="nav-extended">
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Flying Sensor Node</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="about.html">Home</a></li>
+        <li><a href="flying.html">Try it</a></li>
+        <li><a href="team.html">Team</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-demo">
+    <li><a href="home.html">Home</a></li>
+    <li><a href="Try.html">Try</a></li>
+    <li><a href="Team.html">Team</a></li>
+  </ul>
+
+ <h1>Drone Simulation and Surrounding Data Analysis</h1>
+  <p>Run the following commands in the terminal then refresh this page.</p>
+  <ol>
+    <li><tt>roscore</tt></li>
+    <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+  </ol>
+  <div id="statusIndicator">
+    <p id="connecting">
+      Connecting to rosbridge...
+    </p>
+    <p id="connected" style="color:#00D600; display:none">
+      Connected
+    </p>
+    <p id="error" style="color:#FF0000; display:none">
+      Error in the backend!
+    </p>
+    <p id="closed" style="display:none">
+      Connection closed.
+    </p>
+  </div>
+   <button class="waves-effect waves-light btn" id="unset" onclick="takeoff()">Take off Drone</button>
+   <br> 
+  <div  id="set">
+    <button type="button"  onclick="land()" >Land Drone</button>
+    </br>
+    <button type="button"  onclick="left()" >Left</button>
+    </br>
+    <button type="button"  onclick="right()">Right</button>
+    </br>
+    <button type="button"  onclick="forward()">Forward</button>
+    </br>
+    <button type="button"  onclick="backward()">Backward</button>
+    </br>
+    <button type="button"  onclick="reset()">Reset</button>
+   </div> 
+<div style="width:580px; margin:auto;">
+<canvas class="chartjs-render-monitor" id="myChart" style="width: 580px;height: 290px" width="580" height="290"></canvas>
+</div>
+<div style="width:580px; margin:auto;">
+<canvas class="chartjs-render-monitor" id="myChart2" style="width: 580px;height: 290px" width="580" height="290"></canvas>
+</div>
+<script>
+  // Connecting to ROS
+  var b=0,lat=0,long=0,vx=0,vy=0,vz=0;
+  var chartColors = {
+      red: 'rgb(255, 99, 132)',
+      orange: 'rgb(255, 159, 64)',
+      yellow: 'rgb(255, 205, 86)',
+      green: 'rgb(75, 192, 192)',
+      blue: 'rgb(54, 162, 235)',
+      purple: 'rgb(153, 102, 255)',
+      grey: 'rgb(201, 203, 207)'
+    };
+
+  // -----------------
+  var ros = new ROSLIB.Ros({
+    // set this to false to use the new service interface to
+    // tf2_web_republisher. true is the default and means roslibjs
+    // will use the action interface
+    groovyCompatibility : true
+  });
+
+  // If there is an error on the backend, an 'error' emit will be emitted.
+  ros.on('error', function(error) {
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('error').style.display = 'inline';
+    console.log(error);
+  });
+
+  // Find out exactly when we made a connection.
+  ros.on('connection', function() {
+    console.log('Connection made!');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('connected').style.display = 'inline';
+  });
+
+  ros.on('close', function() {
+    console.log('Connection closed.');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'inline';
+  });
+
+  // Create a connection to the rosbridge WebSocket server.
+  ros.connect('ws://localhost:9090');
+
+  var myData;
+
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/fix',
+    messageType : 'sensor_msgs/NavSatFix'
+  });
+
+  var listener2 = new ROSLIB.Topic({
+    ros : ros,
+    name : '/ardrone/navdata',
+    messageType : 'ardrone_autonomy/Navdata'
+  });
+
+  // Then we add a callback to be called every time a message is published on this topic.
+  listener.subscribe(function(message) {
+    console.log('Received message on ' + listener.name + ': ' + message.latitude + ':' +message.longitude);
+   
+    //printing data on front end
+    //graph();
+    lat=message.latitude;
+    long=message.longitude;
+    // If desired, we can unsubscribe from the topic as well.
+    //listener.unsubscribe();
+  });
+
+  listener2.subscribe(function(message) {
+    vx=message.vx;
+    vy=message.vy;
+    vz=message.vz;
+
+  });
+
+
+  //take off drone
+var takeoffdrone = new ROSLIB.Topic({
+    ros : ros,
+    name : '/ardrone/takeoff',
+    messageType : 'std_msgs/Empty'
+  });
+
+  function takeoff(){
+    document.getElementById('set').style.visibility="visible";
+    document.getElementById('unset').style.visibility="hidden";
+    var empty=new ROSLIB.Message({});
+    takeoffdrone.publish(empty);
+
+  } 
+
+    //land drone
+var landdrone =new ROSLIB.Topic({
+  ros:ros,
+  name: '/ardrone/land',
+  messageType: 'std_msgs/Empty'
+});
+
+//Publish on /cmdvel
+var cmdVel = new ROSLIB.Topic({
+    ros : ros,
+    name : '/cmd_vel',
+    messageType : 'geometry_msgs/Twist'
+  });
+
+function land(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+
+
+  var empty=new ROSLIB.Message({});
+    landdrone.publish(empty);
+
+    document.getElementById('set').style.visibility="hidden";
+    document.getElementById('unset').style.visibility="visible";
+}
+
+
+
+//move left 
+
+function left(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:-0.5,
+      y:0.0,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+
+//move right
+function right(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.5,
+      y:0.0,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+
+//move forward
+
+function forward(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.0,
+      y:0.5,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+
+//move backward
+function backward(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.0,
+      y:-0.5,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+
+function reset(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+//plotly graph genereation for temperature and humidity
+
+var c=0;
+var ctx = document.getElementById('myChart').getContext('2d');
+
+var chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [{
+      data: [],
+      label: 'Longitude',
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      lineTension: 0,
+      borderDash: [8, 4]
+    },{
+      data: [],
+      label: 'Longitude',
+      borderColor: 'rgb(54, 162, 235)',
+      backgroundColor: 'rgba(54, 162, 235, 0.5)'
+    }]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        type: 'realtime'
+      }]
+    },
+    plugins: {
+      streaming: {
+        onRefresh: function(chart) {
+          chart.data.datasets.forEach(function(dataset) {
+            if(c==0){
+              c++;
+              dataset.data.push({
+              x: Date.now(),
+              y: lat
+            });
+            }
+            else{
+              c=0;
+              dataset.data.push({
+              x: Date.now(),
+              y: long
+            });
+            }
+          });
+        },
+        delay:2000
+      }
+    }
+  }
+});
+var d=0;
+var ctx2 = document.getElementById('myChart2').getContext('2d');
+
+var chart2 = new Chart(ctx2, {
+  type: 'line',
+  data: {
+    datasets: [{
+      data: [],
+      label: 'Linear x',
+      borderColor: 'rgb(255, 99, 132)'
+    },{
+      data: [],
+      label: 'Linear y',
+      borderColor: 'rgb(54, 162, 235)'
+    },
+    {
+      data: [],
+      label: 'Linear z',
+      borderColor: 'rgb(54, 150, 210)'
+    }]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        type: 'realtime'
+      }]
+    },
+    plugins: {
+      streaming: {
+        onRefresh: function(chart) {
+          chart.data.datasets.forEach(function(dataset) {
+            if(d==0){
+              d++;
+              dataset.data.push({
+              x: Date.now(),
+              y: vx
+            });
+            }
+            else if(d==1){
+              d++;
+              dataset.data.push({
+              x: Date.now(),
+              y: vy
+            });
+            }
+            else if(d==2){
+              d=0;
+              dataset.data.push({
+              x: Date.now(),
+              y: vz
+            });
+            }
+          });
+        },
+        delay:2000
+      }
+    }
+  }
+});
+  </script>
+
+</body>
+</html>
