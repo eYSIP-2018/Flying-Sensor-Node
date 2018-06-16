@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flying Sensor Node</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/cover.css">
+	<script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+	<script src="js/roslib.js"></script>
+	<script type="text/javascript" src="js/connection.js"></script>
+	<script>
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/fix',
+    messageType : 'sensor_msgs/NavSatFix'
+  });
+
+  // Then we add a callback to be called every time a message is published on this topic.
+  listener.subscribe(function(message) {
+    console.log('Received message on ' + listener.name + ': ' + message.latitude + ':' +message.longitude);
+    
+    //printing data on front end
+    document.getElementById('lat').innerHTML=(message.latitude);
+    document.getElementById('long').innerHTML=(message.longitude);
+    
+    // If desired, we can unsubscribe from the topic as well.
+    listener.unsubscribe();
+  });
+
+  //take off drone
+var takeoffdrone = new ROSLIB.Topic({
+    ros : ros,
+    name : '/ardrone/takeoff',
+    messageType : 'std_msgs/Empty'
+  });
+
+  function takeoff(){
+    document.getElementById('set').style.visibility="visible";
+    document.getElementById('unset').style.visibility="hidden";
+    var empty=new ROSLIB.Message({});
+    takeoffdrone.publish(empty);
+
+  } 
+
+    //land drone
+var landdrone =new ROSLIB.Topic({
+  ros:ros,
+  name: '/ardrone/land',
+  messageType: 'std_msgs/Empty'
+});
+
+//Publish on /cmdvel
+var cmdVel = new ROSLIB.Topic({
+    ros : ros,
+    name : '/cmd_vel',
+    messageType : 'geometry_msgs/Twist'
+  });
+
+function land(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+
+
+  var empty=new ROSLIB.Message({});
+    landdrone.publish(empty);
+
+    document.getElementById('set').style.visibility="hidden";
+    document.getElementById('unset').style.visibility="visible";
+}
+
+
+
+//move left 
+
+function left(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:-0.5,
+      y:0.0,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+
+//move right
+function right(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.5,
+      y:0.0,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+
+//move forward
+
+function forward(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.0,
+      y:0.5,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+
+//move backward
+function backward(){
+  var twist=new ROSLIB.Message({
+    linear:{
+      x:0.0,
+      y:-0.5,
+      z:0.0
+    },
+    angular:{
+      x:0.0,
+      y:0.0,
+      z:0.0
+    }
+  });
+  cmdVel.publish(twist);
+}
+  </script>
+
+</head>
+<body class=text-center>
+	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand" style="text-decoration: underline;font-family: droid serif">EYSIP-2018 Project</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link " href="index.html">Home</a>
+            <a class="nav-link active" href="try.html">TryIt</a>
+            <a class="nav-link" href="team.html">Team</a>
+          </nav>
+        </div>
+      </header>
+
+      <div>
+      	
+ <h1>Drone Simulation and Surrounding Data Analysis</h1>
+  <p>Run the following commands in the terminal then refresh this page.</p>
+  <ol>
+    <li><tt>roscore</tt></li>
+    <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+  </ol>
+  <div id="statusIndicator">
+    <p id="connecting">
+      Connecting to rosbridge...
+    </p>
+    <p id="connected" style="color:#00D600; display:none">
+      Connected
+    </p>
+    <p id="error" style="color:#FF0000; display:none">
+      Error in the backend!
+    </p>
+    <p id="closed" style="display:none">
+      Connection closed.
+    </p>
+  </div>
+      </div>
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <p style="color: black">Designed and Copyrighted &copy; by Abheet Verma and Chirag Shah</p>
+        </div>
+      </footer>
+  </div>
+
+</body>
+</html>
