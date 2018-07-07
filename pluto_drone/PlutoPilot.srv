@@ -13,9 +13,11 @@ float32 magX
 float32 magY
 float32 magZ
 float32 alt
-float32 uwb_x
-float32 uwb_y
-float32 uwb_z
+float32 battery
+float32 temp
+float32 posx
+float32 posy
+float32 posz
 
 ---
 #response

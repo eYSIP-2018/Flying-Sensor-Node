@@ -3,42 +3,71 @@ from plutodrone.srv import *
 from plutodrone.msg import *
 import rospy
 import roslib
-import queue
+from queue import *
+import time
 from std_msgs.msg import Float32,Float32MultiArray
 from geometry_msgs.msg import Point
 
 max_size=20
 coordinate=[0.0,0.0,0.0]
-data_x=queue.Queue(max_size)
-data_y=queue.Queue(max_size)
-data_z=queue.Queue(max_size)
 count=0
 sum_x=0.0
 sum_y=0.0
 sum_z=0.0
 x1=[0.0,0.0,0.0]
+data_x=Queue(maxsize=20)
+data_y=Queue(maxsize=20)
+data_z=Queue(maxsize=20)
 class request_data():
 	"""docstring for request_data"""
 	def __init__(self):
 		rospy.init_node('drone_board_data')
 		data = rospy.Service('PlutoService', PlutoPilot, self.access_data)
 		self.co = rospy.Publisher('/coord', Point, queue_size=5)
+		#self.roll=rospy.Publisher('/roll_sensor',Float32,queue_size=5)
+		#self.pitch=rospy.Publisher('/pitch_sensor',Float32,queue_size=5)
+		self.compl=rospy.Publisher('/Sensor_data',Point,queue_size=5)
+		#self.accel=rospy.Publisher('/acc_sensor',Point,queue_size=5)
+		#self.gyrosc=rospy.Publisher('/gyro_sensor',Point,queue_size=5)		
 		#self.yaw_pub = rospy.Publisher('/yaw_publisher', Float64, queue_size=1)
 		#self.pub=rospy.Publisher('/drone_command',PlutoMsg,queue_size=10)
 		#self.arm()
+		self.temperature=rospy.Publisher('/temperature',Float32,queue_size=5)
 		self.cmd=Point()
+		self.last=Point()
+		#self.acc=Point()
+		#self.gyro=Point()
+		
 		#self.pub1=PlutoMsg()
 		#self.arm()
-		rospy.spin()
+		self.list_x=[0]
+		self.list_y=[0]
+		self.list_z=[0]
 		
-	def arm(self):
-		self.pub1.rcRoll = 1500
-		self.pub1.rcYaw = 1500
-		self.pub1.rcPitch = 1500
-		self.pub1.rcThrottle = 1000
-		self.pub1.rcAUX4 = 1500
-		self.pub.publish(self.pub1)
-		rospy.sleep(0.1)
+		#complement
+		self.K=0.98
+		self.gyro_scaled_x=0.0
+		self.gyro_scaled_y=0.0
+		#self.gyro_scaled_z=0
+		self.acc_scale_x=0.0
+		self.acc_scale_y=0.0
+		#self.acc_scale_z=0
+		self.now_time=time.time()
+	
+
+
+		self.roll=0
+		self.pitch=0
+		self.prev_posx=0.0
+		self.prev_posy=0.0
+		self.prev_posz=0.0
+		self.posx=0
+		self.posy=0
+		self.posz=0
+
+
+
+		rospy.spin()
 
 	def access_data(self, req):
 		global data_x
@@ -51,53 +80,74 @@ class request_data():
 		global x1
 		print "accx = " + str(req.accX), "accy = " + str(req.accY), "accz = " + str(req.accZ)
 		print "gyrox = " + str(req.gyroX), "gyroy = " + str(req.gyroY), "gyroz = " + str(req.gyroZ)
-		print "magx = " + str(req.magX), "magy = " + str(req.magY), "magz = " + str(req.magZ)
+		#print "magx = " + str(req.magX), "magy = " + str(req.magY), "magz = " + str(req.magZ)
 		print "roll = " + str(req.roll), "pitch = " + str(req.pitch), "yaw = " + str(req.yaw)
-		print "altitude = " +str(req.alt)
-		 
-		#print "battery = " +str(req.battery)
-		print "uwb_x = " +str(req.uwb_x)
-		print "uwb_y = " +str(req.uwb_y)
-		print "uwb_z = " +str(req.uwb_z)
-		#print "temp ="+str(req.temp)
-		x=req.uwb_x
-		y=req.uwb_y
-		z=req.uwb_z
+		#print "altitude = " +str(req.alt)
+		"""print "Sensor_data"
+		print "x="+str(req.posx),"y="+str(req.posy),"z="+str(req.posz)"""
+		print "temp=" + str(req.temp)
+		self.roll=req.roll
+		self.pitch=req.pitch
+		self.temperature.publish(req.temp)
+		x=int(req.posx/30)
+		#y=int(req.posy/50)
+		y=int(req.posy/20)
+		#z=int(req.posz/20)
+		z=int(req.posz/10)
+		#print "x="+str(x),"y="+str(y),"z="+str(z)
+		#self.cmd.x=int(x/40)
+		#self.cmd.y=int(y/40)
+		#self.cmd.z=int(z/10)
 		data_x.put(x)
 		data_y.put(y)
 		data_z.put(z)
+		"""self.list_x.append(x)
+		self.list_z.append(z)
+		self.list_y.append(y)"""
 		sum_x=sum_x+x*0.05
 		sum_y=sum_y+y*0.05
 		sum_z=sum_z+z*0.05
-		count=count+1
+		#print "unpopped"+str(self.list_x)
+		count=count+1#len(self.list_y)
 		if(count>=max_size):
-			x1[0]=sum_x
-			x1[1]=sum_y
-			x1[2]=sum_z
-			self.cmd.x=x1[0]
-			self.cmd.y=x1[1]
-			self.cmd.z=x1[2]
+			#print count
+			self.posx=sum_x
+			self.posy=sum_y
+			self.posz=sum_z
 			x=data_x.get()
 			y=data_y.get()
 			z=data_z.get()
 			sum_x=sum_x-x*0.05
 			sum_y=sum_y-y*0.05
 			sum_z=sum_z-z*0.05
-			#print count
-			self.co.publish(self.cmd)
-		#x.publish(req.uwb_x)
-		#y.publish(req.uwb_y)
-		#z.publish(req.uwb_z)
-		
-		
-		
-		#print "x_coordinate = "+str(req.uwb_x) #, "y_coordinate = "+str(req.uwb_y) , "z_coordinate = "+str(req.uwb_z)
-		 
+			#print self.cmd.x
+			#print self.cmd.y
+			#print self.cmd.z
+			#self.co.publish(self.cmd)
+			self.complement()
+		self.prev_posz=self.posz
+		self.prev_posy=self.posy
+		self.prev_posx=self.posx		 
 		rospy.sleep(.1)
 		return PlutoPilotResponse(rcAUX2 =1500)
+		
+	def complement(self):
+
+		change_posx=self.posx-self.prev_posx
+		change_posy=self.posy-self.prev_posy
+		change_posz=self.posz-self.prev_posz
+		change_posy=change_posy*0.1+self.pitch*0.9
+		change_posx=change_posx*0.1-self.roll*0.9
+
+		self.cmd.x=self.prev_posx+change_posx
+		self.cmd.y=self.prev_posy+change_posy
+		self.cmd.z=self.posz
+		print self.cmd
+
+		self.co.publish(self.cmd)
+
+
+		
 if __name__=="__main__":
-	
-	#y = rospy.Publisher('/y_coord',Float32, queue_size=5)
-	#z = rospy.Publisher('/z_coord',Float32, queue_size=5)
 	test = request_data()
 		
