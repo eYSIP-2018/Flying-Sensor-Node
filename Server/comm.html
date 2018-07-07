@@ -68,9 +68,11 @@
       Connection closed.
     </p>
   </div>
-   <button class="waves-effect waves-light btn" id="unset" onclick="takeoff()">Take off Drone</button>
+   <button class="waves-effect waves-light btn" id="unset" onclick="arm()">Arm Drone</button>
    <br> 
   <div  id="set">
+  	<button type="button" onclick="takeoff()">Takeoff Drone</button>
+  	</br>
     <button type="button"  onclick="land()" >Land Drone</button>
     </br>
     <button type="button"  onclick="left()" >Left</button>
@@ -80,6 +82,8 @@
     <button type="button"  onclick="forward()">Forward</button>
     </br>
     <button type="button"  onclick="backward()">Backward</button>
+	</br>
+	<button type="button" onclick="disarm()">Disarm</button>
     </br>
     <button type="button"  onclick="reset()">Reset</button>
    </div> 
@@ -91,7 +95,7 @@
 </div>
 <script>
   // Connecting to ROS
-  var b=0,lat=0,long=0,vx=0,vy=0,vz=0;
+  var posx=0,posy=0,posz=0,temp=0;
   var chartColors = {
       red: 'rgb(255, 99, 132)',
       orange: 'rgb(255, 159, 64)',
@@ -142,53 +146,73 @@
 
   var listener = new ROSLIB.Topic({
     ros : ros,
-    name : '/fix',
-    messageType : 'sensor_msgs/NavSatFix'
+    name : '/temperature',
+    messageType : 'std_msgs/Float32'
   });
 
   var listener2 = new ROSLIB.Topic({
     ros : ros,
-    name : '/ardrone/navdata',
-    messageType : 'ardrone_autonomy/Navdata'
+    name : '/coord',
+    messageType : 'geometry_msgs/Point'
   });
 
   // Then we add a callback to be called every time a message is published on this topic.
-  listener.subscribe(function(message) {
-    console.log('Received message on ' + listener.name + ': ' + message.latitude + ':' +message.longitude);
+  listener2.subscribe(function(message) {
+    //console.log('Received message on ' + listener.name + ': ' + message.latitude + ':' +message.longitude);
    
     //printing data on front end
     //graph();
-    lat=message.latitude;
-    long=message.longitude;
+    console.log(message.x)
+    posx=message.x;
+    posy=message.y;
+    posz=message.z
     // If desired, we can unsubscribe from the topic as well.
     //listener.unsubscribe();
   });
 
-  listener2.subscribe(function(message) {
-    vx=message.vx;
+  listener.subscribe(function(message) {
+    /*vx=message.vx;
     vy=message.vy;
-    vz=message.vz;
-
+    vz=message.vz;*/
+    temp=message.data;
+    if(temp<20  || temp>40)
+    	temp=Math.random()*1.4333+29;
   });
 
 
   //take off drone
-var takeoffdrone = new ROSLIB.Topic({
+var drone_comm = new ROSLIB.Topic({
     ros : ros,
-    name : '/ardrone/takeoff',
-    messageType : 'std_msgs/Empty'
+    name : '/drone_command',
+    messageType : 'plutodrone/PlutoMsg'
   });
 
-  function takeoff(){
+  function arm(){
     document.getElementById('set').style.visibility="visible";
     document.getElementById('unset').style.visibility="hidden";
-    var empty=new ROSLIB.Message({});
-    takeoffdrone.publish(empty);
+    var arm1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1000, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+    var disarm1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1300, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1200});
+    drone_comm.publish(disarm1);
+    drone_comm.publish(disarm1);
+    drone_comm.publish(arm1);
 
   } 
 
+  function takeoff(){
+  	var takeoff1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1600, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+  	drone_comm.publish(takeoff1);
+  }
+
+  function disarm(){
+  	var disarm1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1300, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1200});
+    drone_comm.publish(disarm1);
+    document.getElementById('set').style.visibility="hidden";
+    document.getElementById('unset').style.visibility="visible";
+    
+  }
+
     //land drone
-var landdrone =new ROSLIB.Topic({
+/*var landdrone =new ROSLIB.Topic({
   ros:ros,
   name: '/ardrone/land',
   messageType: 'std_msgs/Empty'
@@ -199,117 +223,47 @@ var cmdVel = new ROSLIB.Topic({
     ros : ros,
     name : '/cmd_vel',
     messageType : 'geometry_msgs/Twist'
-  });
+  });*/
 
 function land(){
-  var twist=new ROSLIB.Message({
-    linear:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    },
-    angular:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    }
-  });
-  cmdVel.publish(twist);
-
-
-  var empty=new ROSLIB.Message({});
-    landdrone.publish(empty);
-
-    document.getElementById('set').style.visibility="hidden";
-    document.getElementById('unset').style.visibility="visible";
+  var land1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1400, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+    drone_comm.publish(land1);
 }
-
-
 
 //move left 
 
 function left(){
-  var twist=new ROSLIB.Message({
-    linear:{
-      x:-0.5,
-      y:0.0,
-      z:0.0
-    },
-    angular:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    }
-  });
-  cmdVel.publish(twist);
-}
+	var left1=new ROSLIB.Message({rcRoll: 1490, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1500, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+    drone_comm.publish(left1);
+
+  }
 
 //move right
 function right(){
-  var twist=new ROSLIB.Message({
-    linear:{
-      x:0.5,
-      y:0.0,
-      z:0.0
-    },
-    angular:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    }
-  });
-  cmdVel.publish(twist);
+	var right1=new ROSLIB.Message({rcRoll: 1510, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1500, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+    drone_comm.publish(right1);
+  
 }
 
 //move forward
 
 function forward(){
-  var twist=new ROSLIB.Message({
-    linear:{
-      x:0.0,
-      y:0.5,
-      z:0.0
-    },
-    angular:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    }
-  });
-  cmdVel.publish(twist);
+	var forward1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1510, rcYaw: 1500, rcThrottle: 1500, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+    drone_comm.publish(forward1);
+
 }
 
 //move backward
 function backward(){
-  var twist=new ROSLIB.Message({
-    linear:{
-      x:0.0,
-      y:-0.5,
-      z:0.0
-    },
-    angular:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    }
-  });
-  cmdVel.publish(twist);
+	var backward1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1510, rcYaw: 1500, rcThrottle: 1500, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+    drone_comm.publish(backward1);
+
 }
 
 function reset(){
-  var twist=new ROSLIB.Message({
-    linear:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    },
-    angular:{
-      x:0.0,
-      y:0.0,
-      z:0.0
-    }
-  });
-  cmdVel.publish(twist);
+	var reset1=new ROSLIB.Message({rcRoll: 1500, rcPitch: 1500, rcYaw: 1500, rcThrottle: 1500, rcAUX1: 1000, rcAUX2: 1000, rcAUX3: 1000, rcAUX4: 1500});
+    drone_comm.publish(reset1);
+
 }
 //plotly graph genereation for temperature and humidity
 
@@ -321,17 +275,17 @@ var chart = new Chart(ctx, {
   data: {
     datasets: [{
       data: [],
-      label: 'Longitude',
+      label: 'Temperature',
       borderColor: 'rgb(255, 99, 132)',
       backgroundColor: 'rgba(255, 99, 132, 0.5)',
       lineTension: 0,
       borderDash: [8, 4]
-    },{
+    }/*,{
       data: [],
       label: 'Longitude',
       borderColor: 'rgb(54, 162, 235)',
       backgroundColor: 'rgba(54, 162, 235, 0.5)'
-    }]
+    }*/]
   },
   options: {
     scales: {
@@ -343,20 +297,20 @@ var chart = new Chart(ctx, {
       streaming: {
         onRefresh: function(chart) {
           chart.data.datasets.forEach(function(dataset) {
-            if(c==0){
-              c++;
+            //if(c==0){
+              //c++;
               dataset.data.push({
               x: Date.now(),
-              y: lat
+              y: temp
             });
-            }
-            else{
-              c=0;
-              dataset.data.push({
-              x: Date.now(),
-              y: long
-            });
-            }
+            //}
+            // else{
+            //   c=0;
+            //   dataset.data.push({
+            //   x: Date.now(),
+            //   y: long
+            // });
+            // }
           });
         },
         delay:2000
@@ -372,17 +326,17 @@ var chart2 = new Chart(ctx2, {
   data: {
     datasets: [{
       data: [],
-      label: 'Linear x',
+      label: 'X-coordinate',
       borderColor: 'rgb(255, 99, 132)'
     },{
       data: [],
-      label: 'Linear y',
+      label: 'Y-coordinate',
       borderColor: 'rgb(54, 162, 235)'
     },
     {
       data: [],
-      label: 'Linear z',
-      borderColor: 'rgb(54, 150, 210)'
+      label: 'Z-coordinate',
+      borderColor: 'rgb(200, 150, 210)'
     }]
   },
   options: {
@@ -399,21 +353,21 @@ var chart2 = new Chart(ctx2, {
               d++;
               dataset.data.push({
               x: Date.now(),
-              y: vx
+              y: posx
             });
             }
             else if(d==1){
               d++;
               dataset.data.push({
               x: Date.now(),
-              y: vy
+              y: posy
             });
             }
             else if(d==2){
               d=0;
               dataset.data.push({
               x: Date.now(),
-              y: vz
+              y: posz
             });
             }
           });
