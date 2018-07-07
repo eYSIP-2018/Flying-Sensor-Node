@@ -18,6 +18,7 @@ x1=[0.0,0.0,0.0]
 data_x=Queue(maxsize=20)
 data_y=Queue(maxsize=20)
 data_z=Queue(maxsize=20)
+
 class request_data():
 	"""docstring for request_data"""
 	def __init__(self):
