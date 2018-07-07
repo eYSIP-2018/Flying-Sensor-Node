@@ -10,11 +10,11 @@ These instructions will get you a copy of the project up and running on your loc
 
  Embedded C, Python Programming, Experience with ROS and Linux, basic electronic circuit design.
  
- ### Installing  
+### Software Required
+
+ROS, Linux OS, Putty for Windows,Mission Planner,Roslibjs,Rosbridge_suite,Python.
+
+### Installing  
  
  Clone the repository and install the dependencies.Follow the report for detailed installation instructions.
  
- ### Deployment 
- 
-Outdoor 
-
