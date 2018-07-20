@@ -58,6 +58,7 @@ contents={\includegraphics{logo}}
 
 %package for inserting pictures
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
 
@@ -96,42 +97,45 @@ contents={\includegraphics{logo}}
 \chapter[Project Tag]{Flying Sensor Node}
 \section*{Abstract}
 
-Drone and IoT are two emerging technologies having a plethora of applications. Through this project we aim to bridge these technologies to develop an indoor and outdoor environment monitoring system. A drone acts as a sensor node and flies across a room using way points predetermined by the user, collecting the temperature and humidity data using on-board sensors. The sensor data along with the location and time stamp are sent to central IoT server for data visualization and analytics.\\ \\ Different drones were used for indoor and outdoor environments to tackle the unique challenges faced in terms of mobility and localization in each environment. The concept of charging the drone through a landing deck was also explored in order to realize the potential of Flying Sensor Node in real world applications.
-   
+Drone and IoT are two emerging technologies having a plethora of applications. Through this project we aim to bridge these technologies to develop an indoor and outdoor environment monitoring system. A drone acts as a sensor node and flies across a room using way points predetermined by the user, collecting the temperature and humidity data using on-board sensors. The sensor data along with the location and time stamp are sent to central IoT server for data visualization and analytics.\\ \\ 
+Different drones were used for indoor and outdoor environments to tackle the unique challenges faced in terms of mobility and localization in each environment. The concept of charging the drone through a landing deck was also explored in order to realize the potential of Flying Sensor Node in real world applications. The necessity of this system can be found in places such as greenhouses, where the environment needs to be monitored to schedule tasks such as irrigation, fertilizing etc. \\ \\
+A wireless sensor network if installed in such an area would require a huge number of nodes. Hence, resulting in increased maintenance effort and cost. Sensor nodes are static and hence can only give feedback at fixed points in the monitoring area, leading to loss in critical information. If considering a greenhouse a leakage in the irrigation system in a place not monitored by a sensor node will go undetected but a flying sensor node will be able to detect parameters at every point in its path.\\ \\
+The goal of this project was not only to get the flying sensor node's data but to also make it accessible to the user in a manner which is simple and intuitive. In order to achieve this goal an Internet of Things dashboard was built which allows the user to visualize sensor data and also control some basic functionalities of the drone. The platforms were different for both indoor and outdoor flying sensor nodes, according to the capabilities of each drone. For example the dashboard for the outdoor flying sensor node has a live video stream and live tracking on maps whereas the indoor flying sensor node has control commands on the server.
+
 \subsection*{Completion status}
 \subsubsection{Indoor Flying Sensor Node Tasks} 
 
 \begin{itemize}
-\item Pluto X on-board sensor and peripheral interfacing using existing APIs
-\item STM32f303CB peripheral interfacing using standard peripheral libraries
-\item AR Drone navigation in Gazebo simulation for both Whycon and GPS
-\item AR Drone communication in Gazebo simulation for IMU values
-\item IoT Server for sensor data visualisation and live tracking was created on the control station
-\item Establish communication between Drone and IoT Platform in simulation and reality
-\item Decawave UWB tag and anchor hardware setup and configuration
-\item UWB tag interfacing on Pluto X
-\item Pluto X location co-ordinates transmission and reception using Multi Wii Serial Protocol
-\item Complementary Filter design for localization data (Needs Improvement)
-\item Payload Testing of Pluto X
-\item Waypoint planning and navigation with data logging using UWB and Whycon
-\item Landing of Pluto X on designated charging area 
+\item Pluto X on-board sensor and peripheral interfacing using existing APIs.
+\item STM32f303CB peripheral interfacing using standard peripheral libraries.
+\item AR Drone navigation in Gazebo simulation for both Whycon and GPS.
+\item AR Drone communication in Gazebo simulation for IMU values.
+\item IoT Server for sensor data visualisation and live tracking was created on the control station.
+\item Establish communication between Drone and IoT Platform in simulation and reality.
+\item Decawave UWB tag and anchor hardware setup and configuration.
+\item UWB tag interfacing on Pluto X.
+\item Pluto X location co-ordinates transmission and reception using Multi Wii Serial Protocol.
+\item Complementary Filter design for localization data (Needs Improvement).
+\item Payload Testing of Pluto X.
+\item Waypoint planning and navigation with data logging using UWB and Whycon.
+\item Landing of Pluto X on designated charging area. 
 \end{itemize}
 
 \subsubsection{Outdoor Flying Sensor Node Tasks} 
 
 \begin{itemize}
-\item Quad-Copter assembly and RC remote testing
-\item Pixhawk setup and configuration using Mission Planner and Q Ground Control was attempted
-\item Pixhawk control using mavros, dronekit and companion computer was attempted
-\item Navio 2 setup for quad-copter was done on RPI 3B
-\item Quad copter configuration and calibration was done using Mission Planner
-\item IoT Server for sensor data visualisation, live tracking and video streaming was created on the RPI 3B
-\item Location logging using GPS was implemented 
-\item Temperature and humidity value from DHT-22 is communicated to the flight controller and is logged
-\item Mounting structure for Sensor node was designed 
-\item Battery consumption was analyzed and appropriate power source was selected
-\item Fail safes were removed to enable indoor testing
-\item Stabilize mode of operation was tested indoors using RC transmitter
+\item Quadcopter assembly and RC remote testing.
+\item Pixhawk setup and configuration using Mission Planner and Q Ground Control was attempted.
+\item Pixhawk control using mavros, dronekit and companion computer was attempted.
+\item Navio 2 setup for quadcopter was done on RPi.
+\item Quadcopter configuration and calibration was done using Mission Planner.
+\item IoT Server for sensor data visualisation, live tracking and video streaming was created on the RPi.
+\item Location logging using GPS was implemented.
+\item Temperature and humidity value from DHT-22 is communicated to the flight controller and is logged.
+\item Mounting structure for Sensor node was designed.
+\item Battery consumption was analyzed and appropriate power source was selected.
+\item Fail safes like Geofence,3D Fix and other Prearm Checks like Barometer,Gyro etc were removed to enable indoor testing.
+\item Stabilize mode of operation was tested indoors using RC transmitter.
 \end{itemize}
 
 \section{Hardware parts}
@@ -143,10 +147,10 @@ Drone and IoT are two emerging technologies having a plethora of applications. T
   \item Vendor  : Drona Aviation 
  \end{itemize}
  
- \subsubsection{RPI 3B } 
+ \subsubsection{RPI} 
 
 \begin{itemize}
-  \item Purpose : RPI 3B is the processing unit for the outdoor quad-copter when using Navio 2 
+  \item Purpose : RPI 3B is the processing unit for the outdoor quadcopter when using Navio 2. 
   \item Product Link : \href{https://www.raspberrypi.org/products/raspberry-pi-3-model-b/}{RPI 3B} 
   \item Datasheet : \href{https://cdn.sparkfun.com/datasheets/Dev/RaspberryPi/2020826.pdf}{RPI 3B Datasheet} 
  \end{itemize}
@@ -154,7 +158,7 @@ Drone and IoT are two emerging technologies having a plethora of applications. T
  \subsubsection{Arduino Nano } 
 
 \begin{itemize}
-  \item Purpose : Arduino Nano is used as sensor node
+  \item Purpose : Arduino Nano is used as sensor node.
   \item Product Link : \href{https://robu.in/product/arduino-nano-v3-0-ch340-chip-mini-usb-cable/?gclid=CjwKCAjw4PHZBRA-EiwAAas4ZnkY1Uyx1regBeSCiAQphWNPrAL1DfNjwFlLTFBN2IuJMkXe9YMaixoCQcsQAvD_BwE}{Arduino Nano} 
   \item Datasheet : \href{https://www.arduino.cc/en/uploads/Main/ArduinoNanoManual23.pdf}{Arduino Nano Datasheet} 
  \end{itemize}
@@ -162,7 +166,7 @@ Drone and IoT are two emerging technologies having a plethora of applications. T
  \subsubsection{Navio 2 } 
 
 \begin{itemize}
-  \item Purpose : Navio 2 is an autopilot hat for RPI
+  \item Purpose : Navio 2 is an autopilot hat for RPi that has all the sensors and controllers onboard like Dual IMU,Barometer,GNSS receiver,RC I/O co-processor etc. 
   \item Product Link : \href{https://store.emlid.com/product/navio2/}{Navio 2} 
   \item Product Brief : \href{https://docs.emlid.com/navio2/}{Navio 2 Documentation} 
  \end{itemize}
@@ -178,7 +182,7 @@ Drone and IoT are two emerging technologies having a plethora of applications. T
  \subsubsection{LiPo Battery 6200 mAh, 40C \& 11.1 V } 
 
 \begin{itemize}
-  \item Purpose : Powering the quad-copter
+  \item Purpose : Powering the quadcopter.
   \item Product Link : \href{https://robu.in/product/orange-11-1v-6200mah-3s-40c-lipo-battery-pack-xt60-connector/}{Orange Battery} 
   \item Product Brief : \href{https://robu.in/product/orange-11-1v-6200mah-3s-40c-lipo-battery-pack-xt60-connector/}{Orange Battery Specifications} 
  \end{itemize}
@@ -193,42 +197,45 @@ Drone and IoT are two emerging technologies having a plethora of applications. T
 \subsubsection{Telemetry Radio 433MHz for Navio 2 } 
 
 \begin{itemize}
-  \item Purpose : Communication between ground control station and quad-copter 
+  \item Purpose : Communication between ground control station and quadcopter. 
   \item Product Link : \href{https://store.mrobotics.io/mRo-SiK-Telemetry-Radio-V2-433Mhz-p/mro-433sikv2-mr.htm}{Mrobotics Telemetry Module} 
  \end{itemize}
 
 \subsubsection{Telemetry Radio 433MHz for Pixhawk } 
 
 \begin{itemize}
-  \item Purpose : Communication between ground control station and quad-copter 
+  \item Purpose : Communication between ground control station and quadcopter. 
   \item Product Link : \href{https://robokits.co.in/drones-quad-hexa-octa-fpv/fpv-video-telemetry-osd/433mhz-telemetry-module-pair-for-pixhawk-and-apm-100mw-2km-range}{Pixhawk Compatible Telemetry Module} 
    \end{itemize}
  
  \subsubsection{DHT-22} 
 
 \begin{itemize}
-  \item Purpose : Sensor for obtaining temperature and humidity data 
+  \item Purpose : Sensor for obtaining temperature and humidity data. 
   \item Product Link : \href{https://www.amazon.in/Generic-Digital-Temperature-Humidity-Sensor/dp/B00O8RIYYU}{DHT-22} 
   \item Product Brief : \href{https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf}{DHT-22 Datasheet} 
  \end{itemize}
  
-  \subsubsection{BRUSHLESS MOTOR SPEED CONTROLLER ESC 30A} 
+  \subsubsection{Brushless Motor Speed Controller ESC 30A} 
 
 \begin{itemize}
-  \item Purpose : Electronic speed controller for BLDCs
+  \item Purpose : Electronic speed controller for BLDCs.
   \item Product Link : \href{https://robokits.co.in/quadrotors-hexarotors-drones/brushless-motors-esc/brushless-motor-speed-controller-esc-30a/}{ESC Specifications} 
  \end{itemize}
 
-\subsubsection{RC BRUSHLESS MOTOR 2212 1000KV WITH SOLDERED BANANA CONNECTOR} 
+\subsubsection{RC Brushless Motor 2212 1000KV With Soldered Banana Connector} 
 
 \begin{itemize}
-  \item Purpose : BLDCs with propellers to 
+  \item Purpose : BLDCs with propellers to provide motion to the quadcopter. Various movements are possible by varying the direction of rotation of propellers \& by altering the speed of the motors.
+
+ 
   \item Product Link : \href{https://robokits.co.in/quadrotors-hexarotors-drones/brushless-motors-esc/brushless-motor-speed-controller-esc-30a/}{BLDC Specifications} 
  \end{itemize}
 
 \section{Software used}
-\begin{itemize}
+
  \subsection{Indoor}
+ \begin{itemize}
   \item Java
   
   For Windows:\href{http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html}{Link}\\
@@ -253,12 +260,12 @@ You \textbf{must} install the \textbf{ROS-Indigo in Ubuntu 14.04} on your PC/Lap
    
    \item pluto\_drone
    
-   Metapackage to control the plutodrone via service and topic \href{http://wiki.ros.org/pluto_drone}{wiki} 
+   Metapackage to control the plutodrone via services and topics. This package establishes a connection between laptop and the ESP module on the drone using a socket. Thereby using MSP protocol we can send instructions to the drone and receive data from onboard and external sensors. \href{http://wiki.ros.org/pluto_drone}{wiki} 
    
    
    \item Roslibjs
    
-   Roslibjs is the core JavaScript library for interacting with ROS from the browser. It uses WebSockets to connect with rosbridge and provides publishing, subscribing, service calls.\\
+   Roslibjs is the core JavaScript library for interacting with ROS from the browser. It uses WebSockets to connect with rosbridge and provides publishing, subscribing, service calls.\\ The topics and services are used in the form of JSON. A connection string is used to establish a connection and then get access to the topics.\\
    Download link:
    \href{https://static.robotwebtools.org/roslibjs/current/roslib.min.js}{min}
    ::
@@ -269,11 +276,20 @@ You \textbf{must} install the \textbf{ROS-Indigo in Ubuntu 14.04} on your PC/Lap
   \item Rosbridge\_suite
   
   Rosbridge provides a JSON API to ROS functionality for non-ROS programs. There are a variety of front ends that interface with rosbridge, including a WebSocket server for web browsers to interact with.
-  For installation visit this \href{http://wiki.ros.org/rosbridge_suite}{link}.
+  \\\\
+  Rosbridge suite allows access to the topics and services on the server.Hence topics can be subscribed and published upon to give commands to the robot.\\ For installation visit this \href{http://wiki.ros.org/rosbridge_suite}{link}.
+ \end{itemize} 
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=12cm, height=6cm]{server.png}
+  \caption{Server for indoor drone}
+  \end{figure}
+  
   \subsection{Outdoor}
+  \begin{itemize}
   \item Ground Control Station
   
-  A ground control station (GCS) is a land- or sea-based control centre that provides the facilities for human control of Unmanned Aerial Vehicles (UAVs or "drones").It may also refer to a system for controlling rockets within or above the atmosphere, but this is discussed elsewhere.
+  A ground control station (GCS) is a land-based control centre that provides the facilities for human control of Unmanned Aerial Vehicles (UAVs or "drones").\\ A ground control station helps in sending mission details,setting essential parameters,configuring the sensors,getting real time values of sensors etc.
   
   You may install one the below GCS:\\ \\
   Mission Planner::\href{http://ardupilot.org/planner/docs/common-install-mission-planner.html}{Link}(only for Windows)\\
@@ -281,14 +297,14 @@ You \textbf{must} install the \textbf{ROS-Indigo in Ubuntu 14.04} on your PC/Lap
   
   \item Python 
   
-  Python is an interpreted high-level programming language for general-purpose programming. Created by Guido van Rossum and first released in 1991, Python has a design philosophy that emphasizes code readability, notably using significant whitespace. It provides constructs that enable clear programming on both small and large scales.\\ \\
+  Python examples were available for Raspberry Pi in the documentation for navio 2. The GPS example was used to obtain latitude, longitude and fix status. Python was also used for obtaining sensor data through USB port from the arduino nano (Serial library was used in this case). The server was written using flask which again is based on python. Socket programming was also implemented in the flask server to update position of drone in the background. Also python was used to fetch and update data in the Sqlite3 database   \\ \\
   We used Python 2.7 for this project.
   \textbf{Always use same python version for every library as it may cause errrors}.\\
   For installation visit \href{https://www.python.org/getit/}{here}.
   
   \item Emlid Image for Raspberry Pi
   
-  Raspberry Pi needs an Operating System for operation.A custom image of Raspberry Pi comes with pre installed Ardupilot,Ros and other necessary packages required for automatted vehicles.\\Download the \href{http://files.emlid.com/images/emlid-raspbian-20180525.img.xz}{image} and flash it on a memory card using \href{https://etcher.io/}{Etcher}
+  Raspberry Pi was flashed with a custom image of raspbian that comes with pre installed Ardupilot, Ros and other necessary packages required for automated vehicles(Plane,Rover,Copter). The image does not have a GUI and should be used by connecting through SSH. Reconfiguring the image to enable GUI is not recommended as certain issues in the working were observed such as git-hub commands not working and autopilot parameters not updating. \\Download the \href{http://files.emlid.com/images/emlid-raspbian-20180525.img.xz}{image} and flash it on a memory card using \href{https://etcher.io/}{Etcher}
   \\
   Run and install Etcher using admin rights.\\Select the archive with Image and drive location.\\Click Flash!!.This may take a few minutes.
   
@@ -298,8 +314,35 @@ You \textbf{must} install the \textbf{ROS-Indigo in Ubuntu 14.04} on your PC/Lap
 }{discussion}
   
  
-  \item Flask is a micro web framework written in Python. It is classified as a microframework because it does not require particular tools or libraries. It has no database abstraction layer, form validation, or any other components where pre-existing third-party libraries provide common functions. However, Flask supports extensions that can add application features as if they were implemented in Flask itself.Download flask from \href{http://flask.pocoo.org/docs/0.12/installation/}{here}.
+  \item Flask
   
+  Flask is a micro web framework written in Python. It is classified as a micro-framework because it does not require particular tools or libraries. It is also very intuitive to use. Also as it is based in python, it is compatible with examples provided by emlid for navio 2. Read more about flask from \href{http://flask.pocoo.org/docs/}{here}.
+  
+  \item Sqlite 3
+  
+	Sqlite 3 is the database which was selected to log data locally. Follow this 
+  \href{http://www.instructables.com/id/From-Data-to-Graph-a-Web-Jorney-With-Flask-and-SQL
+}{tutorial} to understand setting up an IoT server using flask and displaying data logged in an Sqlite 3 database. 
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=8cm, height=6cm]{home.png}
+  \caption{Home page}
+  \end{figure}
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=9cm, height=6cm]{track.png}
+  \caption{Live tracking}
+  \end{figure}
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=11cm, height=6cm]{picam.png}
+  \caption{Live Video Feed}
+  \end{figure}
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=11cm, height=6cm]{sensor.png}
+  \caption{Sensor data}
+  \end{figure}
 \end{itemize}
 
 \section{Assembly of hardware}
@@ -309,22 +352,46 @@ The assembly for both indoor and outdoor drones is explained in this section.
 
 \subsubsection*{DWM1001 Module Setup}
 \begin{itemize}
-  \item One module is used as a tag on the drone and the connections are as shown in the figure
-  \item Four modules are used as anchors on the wall and only require a power source of 3.3V 
- \end{itemize}
-\includegraphics[width=15cm, height=8cm]{Pinout_DWM.png}
-\begin{itemize}
+  \item One module is used as a tag on the drone.Connection between tag and PlutoX is shown as shown in the Figure-1.6 below.
+  \begin{figure}[H]
+ \centering
+ \includegraphics[width=13cm, height=6cm]{Pinout_DWM.png}
+ \caption{Pinout of DWM Module}
+ \end{figure}
+  \item Four modules are used as anchors on the wall.Each one of them requires a power source of 3.3V.
+
   \item The modules are configured using the official \href{https://play.google.com/store/apps/details?id=com.decawave.argomanager}{Decawave Android App}
-  \item The instructions for the same are explained in the above application in great detail. 
+  \item The instructions for the same are explained in the android application in great detail. 
  \end{itemize}
 
 \subsubsection*{Pluto X}
 \begin{itemize}
-  \item After attaching the tag on the gpio shield of Pluto X, place the shield on the Pluto X as shown in the figure, "Pluto X Shield Setup"
-  \item The pin mapping of the shield with respect to the STM32f303CB micro-controller on Pluto X is as shown in the table below \\ \\
+  \item The pin mapping of the shield with respect to the STM32f303CB micro-controller on Pluto X is as shown in the table in the Figure 1.7. 
+  \begin{figure}[H]
   \includegraphics[width=15cm, height=6cm]{pinout.PNG}
-
-\begin{figure}
+  \caption{Pin Mapping of Pluto X Shield }
+  \end{figure}
+  \item After attaching the tag on the gpio shield of Pluto X, place the shield on the Pluto X as shown in the Figure 1.8 and 1.9.
+  
+  \begin{figure}[H]
+\centering
+\begin{subfigure}{.48\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{ShieldTop.jpg}
+  \caption{Top View of Pluto-X shield}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{shield.jpg}
+  \caption{Back Side view of Pluto-X shield}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Pluto X Shield}
+\label{fig:test}
+\end{figure}
+  
+  \begin{figure}[H]
 \centering
 \begin{subfigure}{.6\textwidth}
   \centering
@@ -341,28 +408,31 @@ The assembly for both indoor and outdoor drones is explained in this section.
 \caption{Pluto X Shield Setup}
 \label{fig:test}
 \end{figure}
-\item A whycon marker is also added on top of the Pluto X as shown in the figure below to enable landing on charging area using an overhead camera \\ \\
-
+   
+\item A whycon marker is also added on top of the Pluto X as shown in the Figure 1.10 below to enable landing on charging area using an overhead camera. \\ \\
+\begin{figure}[H]
 \centering
 \includegraphics[width=9cm, height=9cm]{whycon.jpg}
+\caption{PlutoX with Whycon Marker Mounted}
+\end{figure}
 \end{itemize}
 
 \subsection*{Outdoor Flying Sensor Node}
 \subsubsection*{Auto Pilot Assembly}
 \begin{itemize}
-\item Raspberry Pi, Navio 2, GPS antenna, Telemetry transreceiver, battery monitor, remote receiver through ppm encoder and electronic speed controller inputs are connected as shown \href{https://docs.emlid.com/navio2/ardupilot/hardware-setup/}{here}
+\item Raspberry Pi, Navio 2, GPS antenna, Telemetry trans-receiver, battery monitor, remote receiver through PPM encoder and electronic speed controller inputs are connected as shown \href{https://docs.emlid.com/navio2/ardupilot/hardware-setup/}{here} \\ \\
+Note: The PPM encoder allows to encode up to 8 PWM (pulse width modulated) signals into one PPM (pulse position modulation) signal. 
 \item The other parts of the drone such as motors and propellers are assembled in accordance to this \href{http://ardupilot.org/copter/docs/connect-escs-and-motors.html}{guide} 
 \item A three cell 11.1V, 6200mAh, 40C lithium polymer battery is used to power the drone
-\item The completely assembled quad-copter is as shown in the image below \\ \\
+\item The completely assembled quadcopter is as shown in the Figure 1.11 .
+\begin{figure}[H]
 \centering
 \includegraphics[width=9cm, height=9cm]{big_drone.jpg}
-\end{itemize}
+\caption{Outdoor Drone/Quadcopter}
+\end{figure}
+\item The sensor node comprising of the arduino nano, DHT-22 and USB connector is as shown in the Figure 1.12.
 
-\begin{itemize}
-\item The sensor node comprising of the arduino nano, DHT-22 and usb connector is as shown in the figure below.
-\item The sensor node needs to be plugged in any of the usb ports of the raspberry pi 3b on the drone.
-\end{itemize}
-\begin{figure}
+\begin{figure}[H]
 \centering
 \begin{subfigure}{.6\textwidth}
   \centering
@@ -379,7 +449,8 @@ The assembly for both indoor and outdoor drones is explained in this section.
 \caption{Sensor Node Module}
 \label{fig:test1}
 \end{figure}
-
+\item The sensor node needs to be plugged in any of the USB ports of the raspberry pi on the drone.
+\end{itemize}
 
 \section{Software and Code}
 \href{https://github.com/eYSIP-2018/Flying-Sensor-Node/}{Github link} for the repository of code
@@ -387,7 +458,7 @@ The assembly for both indoor and outdoor drones is explained in this section.
 \subsection*{Outdoor}
 \begin{itemize}
 \item \textbf{Arduino Code} - Contains code to interface DHT-22 using arduino nano on a Raspberry PI.
-\item \textbf{Drone-Server} - Contains server for drone.Copy the folder on Raspberry PI.
+\item \textbf{Drone-Server} - Contains server and related files for drone and copy the folder on Raspberry PI.
 \item \textbf{Ardupilot Setup} - \href{https://docs.emlid.com/navio2/}{link}
 
 \end{itemize}
@@ -406,13 +477,13 @@ The assembly for both indoor and outdoor drones is explained in this section.
 \subsection*{Use and Demo}
 \subsubsection*{Outdoor}
 \begin{itemize}
-\item After setting up the raspberry with the custom image and configuring the quad-copter using mission planner do the following :-
+\item After setting up the raspberry with the custom image and configuring the quadcopter using mission planner do the following :-
 \item \textbf{Step 1} - Change directory to Drone-Server
 \item \textbf{Step 2} - Run command "sudo modprobe bcm2835-v4l2" to get video on web server.
 \item \textbf{Step 3} - Run command "sudo python SensorLog.py" to get real time sensor data i.e. temperature and humidity
 \item \textbf{Step 4} - Run command "sudo python GPS.py" to get real time sensor data i.e. GPS (only if the drone is outdoors)
 \item \textbf{Step 5} - Run command "sudo python app.py" to start the server
-\item \textbf{Step 6} - If the IP address of the raspberry pi is 192.168.43.238 open a browser on a device connected to the network and enter the URL 192.168.43.238:5010 to get access the IoT platform.
+\item \textbf{Step 6} - If the IP address of the raspberry pi is 192.168.43.238 open a browser on a device connected to the network and enter the URL 192.168.43.238:5010 to get access to the IoT platform.
 
 \end{itemize}
 
@@ -421,8 +492,14 @@ After setting the DWM1001 module,whycon on the drone and the overhead camera fol
 \begin{itemize}
 \item \textbf{Step 1} - Make changes to the serial\_msp.cpp and flash the firmware.
 \item \textbf{Step 2} - Add changed files to pluto\_drone metapackage
+\begin{itemize}
+\item To add your own MSP headers first define it in the firmware in the serial\_msp.cpp file
+\item Add the new MSP header in the service request.
+\item Receive the data in global declared parameters in the \\Plutoservice.srv file
+\end{itemize}
+
 \item \textbf{Step 3} - Run the data\_via\_rosservice.py file to get coordinates and other data
-\item \textbf{Step 4} - Run the launch file and on another terminal run the navigation script.
+\item \textbf{Step 4} - Run the drone\_comb.launch file and on another terminal run the navigation script.
 \item \textbf{Step 5} - Run the rosbridge\_websocket launch and open comm.html in browser to control the drone and get data
 \item \textbf{PS} - Play with the code to understand it better.
 \end{itemize}
@@ -448,20 +525,26 @@ After setting the DWM1001 module,whycon on the drone and the overhead camera fol
 \section{Bug report and Challenges}
 \subsection{Outdoor}
 \begin{itemize}
-\item No heartbeat received from the FCU.
-\item Arming the quadcopter without GPS fix.
-\item Bad logging error due to SD card.
-\item Telemetery issues with Pixhawk flight controller
+\item No heartbeat received from the Flight Controller Unit. Check if the correct mode of connection is selected and the  address(UDP,TCP/IP) is correct. Also check the telemetry module for any damage on both transmitter and receiver end.
+\item Arming the quadcopter without GPS fix is generally not permissible but by changing failsafe parameters this can be bypassed.
+\item Bad logging error due to SD card. Try formatting the SD card again.Make sure to select FAT32 as the memory allocation type.
+\item Telemetery issues with Pixhawk flight controller. Check the telemetry module for any damage on both transmitter and receiver end.
 \end{itemize}
 \subsection{Indoor}
 \begin{itemize}
-\item Understanding the firmware of PlutoX.
-\item Reconfiguring the firmware to accept the coordinate values coming from DWM1001.
-\item Understanding Multi Wii Serial Protocol of data transfer from drone to control station and vice versa.
+\item Understanding the firmware of Pluto X. The firmware itself contains huge amount of code and to understand the flow of code was a little difficult.A more clear reference can be taken from the Cleanflight repository on github.
+\item Reconfiguring the firmware to accept the coordinate values coming from DWM1001. It was done using existing apis mentioned as shown by Drona Aviation team. .
+\item Understanding Multi Wii Serial Protocol of data transfer from drone to control station and vice versa. The protocol was studied using on-line resources and wiki page mentioned in Bibliography.
 \item Reconfiguring the ROS communication package for PlutoX 'plutodrone' to accept new MSP headers.
-\item Designing a filter to reduce noise in the coordinates.
-\item Navigating drone using PID and then switching dynamically between whycon marker and Ultra Wide Band for better navigation.
+\item Designing a filter to reduce noise in the coordinates.A complimentary filter fusing raw roll,pitch values with the coordinates was tried but a better filter can be used to make navigation smoother.
+\item Navigating drone using PID and then switching dynamically between Whycon marker and Ultra Wide Band for better navigation.
 \item Fine tuning of PID for smooth control of drone.
+\item External sensor i.e. DHT-22 interfacing was attempted but was later neglected for the following reasons :-
+\begin{itemize}
+\item The payload i.e.the RFID tag, itself was leading to increased strain on the drone, and incorporating the sensor on the drone increases the weight further which lead to difficulty in the flight of the drone. (Reduced battery life and difficulty in taking off)
+\item The DHT-22 is a sensor based on one wire protocol, and libraries and documentation for it are not readily available for ARM STM32f303CB. Also making changes in the firmware for the same, were attempted in the initial stage but led to random behavior of the drone. The source of random behavior was due to mistakes in the firmware by Drona Aviation which were later rectified. But the sensor interfacing plan was dropped due to the increased payload mentioned earlier.
+\item On-board temperature sensor was later used to do the environment monitoring, but this data was inaccurate due to heat dissipation of on-board components. 
+\end{itemize}
 \end{itemize}
 
 \begin{thebibliography}{li}
@@ -489,4 +572,5 @@ Navio2 drivers-\href{https://github.com/emlid/Navio2}{Github}
 
 
 \end{document}
+
 
